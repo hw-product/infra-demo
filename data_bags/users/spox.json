@@ -1,0 +1,16 @@
+{
+  "id":       "spox",
+  "comment":  "Chris Roberts",
+  "groups":   [ "sysadmin" ],
+  "shell":    "/bin/bash",
+  "ssh_keys": [
+    "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAsNvP+YUaoLt8gfOixHboZQtMXhDky4l+gUK+/rc+rSYRsy4dXpm6unJDiLGCdhyLy5mIJsxG7ot8XHYRIP/GGlgy0zEm2zxqb3vYBwpXIBHgH6i63qdVxNDoyGBCKCYw+Wrq7BZN3qLGfyWnbc0gh56s8d2CiHv1dKXvpeCTSSSbRIvqzOpdFzC8jxO6HRLLSyST3rE8GuxU+x4tQtShivg1kky4OzBvxqTaFv32SOAisyK7/sgkTcpEBD1eoInhqkDHvNbAC7MBt+sPz0jzkOYHJfo1BXVizl61Hfvv7PpfCD6uytU2XEafSrHXk+ei0eqmcQ0tKOovPeTd4AdHIw=="
+  ],
+  "wemux": {
+    "admin": true
+  },
+  "chef_server": {
+    "client_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzMYiW2ZTwCXmdfCxZnCr\nbJJB2xedguYInzKX0T0+8u4qdBu+WOV5oNargsuH/MId0Jdp+nPrsCqB5FoPcBYD\np2Z4xSxeNxeOTtrsjNXJzyxZAQf1tXPszrNiVlVomkXuCZ2ydRdnp0Q4SL3GWVur\nwxBa2I5cm1qyGcqW3YQLl+LJkJCql7tIcgArHhopEdOvF/recVwfViygorGbAIQe\ndK8AzGTKbTV2+diuMU0awZHx48q3xbHqDL4sQAIYgvyrztyyIv4XKTCWP8lOjRBy\nDozDR2o2Kf3ONtOlALO7ZC05QdbOGSWUGbhROH2tDyfnWB8tnbpIvUoWd0YAZEQ4\nOwIDAQAB\n-----END PUBLIC KEY-----\n",
+    "enabled": true
+  }
+}

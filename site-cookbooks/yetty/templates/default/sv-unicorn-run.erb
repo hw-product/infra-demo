@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd '/webapps/yetty'
+exec 2>&1
+exec chpst -u <%= node[:nginx][:user]%>:<%= node[:nginx][:user] %> \
+/opt/chef/embedded/bin/unicorn -E production -c /etc/unicorn/yetty.rb

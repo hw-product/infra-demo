@@ -1,0 +1,7 @@
+.*
+!.gitignore
+!.keep
+!.librarian
+!.chef
+tmp*
+vendor*

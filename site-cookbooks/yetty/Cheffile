@@ -1,0 +1,8 @@
+site 'https://supermarket.getchef.com/api/v1'
+
+cookbook 'yetty', :path => '.'
+
+# common integration dependencies
+cookbook 'apt'
+cookbook 'nginx'
+cookbook 'unicorn'

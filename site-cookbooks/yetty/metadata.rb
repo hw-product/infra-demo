@@ -1,0 +1,11 @@
+name 'yetty'
+maintainer 'Heavy Water Operations'
+maintainer_email 'ops@hw-ops.com'
+license 'Apache 2.0'
+description 'Installs/Configures yetty'
+long_description 'Installs/Configures yetty'
+version '0.1.0'
+
+depends 'unicorn'
+depends 'nginx'
+depends 'build-essential'
