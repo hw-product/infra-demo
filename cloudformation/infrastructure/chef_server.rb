@@ -94,7 +94,7 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
             'mkdir -p /tmp/chef/cookbooks /etc/chef',
             'wget -O /tmp/cstg http://bit.ly/Yf8tTb', # @note this is the chef server cookbook
             'wget -O /tmp/csptg http://bit.ly/Yf8ztU', # @note this is the chef server populator cookbook
-            'curl -L https://www.opscode.com/chef/install.sh | bash',
+            'curl -L https://www.opscode.com/chef/install.sh | bash -s -- -v 11.18.0',
             'mkdir -p /var/log/chef /var/chef/cookbooks/chef-server /var/chef/cookbooks/chef-server-populator /tmp/srv-stp',
             'tar xzf /tmp/cstg -C /var/chef/cookbooks/chef-server --strip-components=1',
             'tar xzf /tmp/csptg -C /var/chef/cookbooks/chef-server-populator --strip-components=1',
