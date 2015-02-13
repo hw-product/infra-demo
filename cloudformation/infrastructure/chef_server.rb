@@ -22,6 +22,12 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
       default 'recipe[chef-server-populator]'
     end
 
+    infra_asset do
+      type 'String'
+      description 'Current infrastructure code bundle'
+      default 'unset'
+    end
+
   end
 
   mappings.chef_server_settings do
@@ -35,12 +41,27 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
     end
   end
 
+  conditions do
+    infra_asset_set not!(equals!(ref!(:infra_asset, 'unset')))
+  end
+
   dynamic!(:load_balancer, :chef_server)
 
   dynamic!(:asg, :chef_server,
     :run_list => [],
     :load_balancers => [ref!(:chef_server_load_balancer)]
   )
+
+  dynamic!(:ec2_security_group_ingress, :chef_server) do
+    properties do
+      group_id attr!(:chef_server_security_group, 'GroupId')
+      ip_protocol ref!(:chef_server_load_balancer_protocol)
+      from_port ref!(:chef_server_load_balancer_instance_port)
+      to_port ref!(:chef_server_load_balancer_instance_port)
+      source_security_group_name ref!(:chef_server_load_balancer_security_name)
+      source_security_group_owner_id ref!(:chef_server_load_balancer_security_id)
+    end
+  end
 
   resources.chef_server_launch_configuration do
     metadata('AWS::CloudFormation::Init') do
