@@ -1,5 +1,7 @@
 SparkleFormation.new("yetty").load(:base, :chef).overrides do
 
+  description 'Yetty Application'
+
   # Yetty app resources
   dynamic!(:asg, 'yetty',
     :run_list => [
