@@ -48,6 +48,7 @@ SparkleFormation.new("yetty").load(:base, :chef).overrides do
                 's3:AbortMultipartUpload',
                 's3:GetBucketLocation'
               ]
+              resource join!('arn:aws:s3:::', ref!(:yetty_bucket), '/*')
             }
           )
         }
