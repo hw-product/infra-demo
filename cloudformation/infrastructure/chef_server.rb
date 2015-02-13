@@ -37,7 +37,7 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
 
   dynamic!(:application_load_balancer, :chef_server)
 
-  dynamic!(:auto_scaling_group, :chef_server,
+  dynamic!(:asg, :chef_server,
     :run_list => [],
     :load_balancers => [ref!(:chef_server_load_balancer)]
   )
@@ -120,7 +120,7 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
     chef_server_load_balancer_port.default '443'
     chef_server_instance_port.default '443'
     chef_server_load_balancer_protocol.default 'TCP'
-    chef_server_load_balancer_hc_check_path.default 'CONNECT:443'
+    chef_server_instance_protocol.default 'TCP'
   end
 
 end
