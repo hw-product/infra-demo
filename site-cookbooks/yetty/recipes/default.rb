@@ -25,27 +25,25 @@ include_recipe 'runit'
 include_recipe 'nginx'
 include_recipe 'unicorn'
 
-deploy_dir = '/webapps/yetty'
+deploy_dir = node[:yetty][:deploy_directory]
 
 directory deploy_dir do
-  owner node['nginx']['user']
-  group node['nginx']['user']
   action :create
   recursive true
+  mode 0755
 end
 
 
 file ::File.join(deploy_dir, 'config.json') do
-  content JSON.pretty_generate(node[:yetty])
-  owner node['nginx']['user']
-  group node['nginx']['user']
+  content Chef::JSONCompat.to_json_pretty(node[:yetty][:config])
+  mode 0640
+  group node[:nginx][:user]
 end
 
 
 file ::File.join(deploy_dir, 'config.ru') do
   content "require 'yetty'\nrun Yetty::Site::App"
-  owner node['nginx']['user']
-  group node['nginx']['user']
+  mode 0644
 end
 
 node.default[:unicorn][:worker_timeout] = 60
