@@ -77,7 +77,7 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
           end
         end
         files('/tmp/srv-stp/creator.pub') do
-          content system!("openssl rsa -in #{::Chef::Config[:client_key]} -pubout")
+          content system!("openssl rsa -in #{ENV['CHEF_CLIENT_KEY']} -pubout")
         end
         files('/etc/chef/client.rb') do
           content "chef_server_url 'https://127.0.0.1'\n" <<
