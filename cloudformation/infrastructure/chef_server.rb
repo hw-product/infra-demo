@@ -42,7 +42,7 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
   end
 
   conditions do
-    infra_asset_set not!(equals!(ref!(:infra_asset, 'unset')))
+    infra_asset_set not!(equals!(ref!(:infra_asset), 'unset'))
   end
 
   dynamic!(:load_balancer, :chef_server)
@@ -55,11 +55,11 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
   dynamic!(:ec2_security_group_ingress, :chef_server) do
     properties do
       group_id attr!(:chef_server_security_group, 'GroupId')
-      ip_protocol ref!(:chef_server_load_balancer_protocol)
-      from_port ref!(:chef_server_load_balancer_instance_port)
-      to_port ref!(:chef_server_load_balancer_instance_port)
-      source_security_group_name ref!(:chef_server_load_balancer_security_name)
-      source_security_group_owner_id ref!(:chef_server_load_balancer_security_id)
+      ip_protocol 'tcp'
+      from_port ref!(:chef_server_instance_port)
+      to_port ref!(:chef_server_instance_port)
+      source_security_group_name attr!(:chef_server_load_balancer, 'SourceSecurityGroup.GroupName')
+      source_security_group_owner_id attr!(:chef_server_load_balancer, 'SourceSecurityGroup.OwnerAlias')
     end
   end
 
