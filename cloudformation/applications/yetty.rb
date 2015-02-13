@@ -28,12 +28,37 @@ SparkleFormation.new("yetty").load(:base, :chef).overrides do
   dynamic!(:load_balancer, 'yetty')
 
   # Asset store setup and access resources
-  dynamic!(:bucket, :yetty)
+  dynamic!(:bucket, :yetty) do
+    properties do
+      cors_configuration.cors_rules array!(
+        -> {
+          allowed_headers ['Authorization']
+          allowed_methods ['GET']
+          allowed_origins ['*']
+          max_age 3000
+        }
+      )
+    end
+  end
 
   dynamic!(:iam_user, :yetty) do
     properties do
       path '/'
       policies array!(
+        -> {
+          policy_name 'yetty_bucket_listing_access'
+          policy_document.statement array!(
+            -> {
+              effect 'Allow'
+              action [
+                's3:ListAllMyBuckets',
+                's3:ListBucket',
+                's3:GetBucketLocation'
+              ]
+              resource 'arn:aws:s3:::*'
+            }
+          )
+        },
         -> {
           policy_name 'yetty_bucket_access'
           policy_document.statement array!(
