@@ -3,6 +3,7 @@ site 'https://supermarket.getchef.com/api/v1'
 cookbook 'sudo'
 cookbook 'users'
 cookbook 'chef-client'
+cookbook 'apt'
 cookbook 'wemux'
 
 cookbook 'chef-server-populator', :git => 'https://github.com/hw-cookbooks/chef-server-populator', :ref => 'develop'
