@@ -35,7 +35,7 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
     end
   end
 
-  dynamic!(:application_load_balancer, :chef_server)
+  dynamic!(:load_balancer, :chef_server)
 
   dynamic!(:asg, :chef_server,
     :run_list => [],
@@ -47,18 +47,18 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
       _camel_keys_set(:auto_disable)
       config.delete!(:commands)
       config do
-        files('/tmp/stable-infra.tgz') do
-          source join!(
-            'https://s3.amazonaws.com', ref!(:infrastructure_bucket), 'stable-infra.tgz',
-            :options => {
-              :delimiter => '/'
-            }
-          )
-          mode '000400'
-          owner 'root'
-          group 'root'
-          authentication 'InfrastructureBucketCredentials'
-        end
+        # files('/tmp/stable-infra.tgz') do
+        #   source join!(
+        #     'https://s3.amazonaws.com', ref!(:infrastructure_bucket), 'stable-infra.tgz',
+        #     :options => {
+        #       :delimiter => '/'
+        #     }
+        #   )
+        #   mode '000400'
+        #   owner 'root'
+        #   group 'root'
+        #   authentication 'InfrastructureBucketCredentials'
+        # end
         files('/etc/chef-server/first_run.json') do
           content do
             run_list [

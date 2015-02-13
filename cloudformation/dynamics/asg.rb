@@ -1,11 +1,22 @@
 SparkleFormation.dynamic(:asg) do |_name, _config={}|
 
-  min = _config[:min_nodes] || 1
-  max = _config[:max_nodes] || 1
-
   parameters do
 
     registry!(:instance_parameters, _name, _config)
+
+    set!("#{_name}_min_nodes".to_sym) do
+      default _config.fetch(:min_nodes, 1).to_s
+      description 'Minimum number of nodes'
+      type 'String'
+      stack_unique true
+    end
+
+    set!("#{_name}_max_nodes".to_sym) do
+      default _config.fetch(:max_nodes, 1).to_s
+      description 'Maximum number of nodes'
+      type 'String'
+      stack_unique true
+    end
 
     set!("#{_name}_key_name".to_sym) do
       default 'demo-infra'
@@ -34,7 +45,7 @@ SparkleFormation.dynamic(:asg) do |_name, _config={}|
   dynamic!(:wait_condition, _name) do
     depends_on process_key!("#{_name}_auto_scaling_group".to_sym)
     properties do
-      count min
+      count ref!("#{_name}_min_nodes".to_sym)
       handle ref!("#{_name}_wait_condition_handle".to_sym)
       timeout 3600
     end
@@ -54,8 +65,8 @@ SparkleFormation.dynamic(:asg) do |_name, _config={}|
   dynamic!(:auto_scaling_auto_scaling_group, _name, :resource_name_suffix => :auto_scaling_group) do
     properties do
       availability_zones azs!
-      min_size min
-      max_size max
+      min_size ref!("#{_name}_min_nodes".to_sym)
+      max_size ref!("#{_name}_max_nodes".to_sym)
       if(_config[:load_balancers])
         load_balancer_names _config[:load_balancers]
       end

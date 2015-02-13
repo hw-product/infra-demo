@@ -1,4 +1,4 @@
-SparkleFormation.dynamic(:application_load_balancer) do |_name, _config={}|
+SparkleFormation.dynamic(:load_balancer) do |_name, _config={}|
 
   parameters do
     set!("#{_name}_load_balancer_port".to_sym) do
@@ -39,7 +39,12 @@ SparkleFormation.dynamic(:application_load_balancer) do |_name, _config={}|
     end
   end
 
-  _lb_resource = dynamic!(:load_balancer, _name) do
+  conditions.set!(
+    "#{_name}_healthcheck_path".to_sym,
+    not!(equals!(ref!("#{_name}_instance_protocol".to_sym), 'TCP'))
+  )
+
+  _lb_resource = dynamic!(:elastic_load_balancing_load_balancer, _name, :resource_name_suffix => :load_balancer) do
     properties do
       availability_zones.set!('Fn::GetAZs', '')
       listeners array!(
@@ -53,11 +58,19 @@ SparkleFormation.dynamic(:application_load_balancer) do |_name, _config={}|
       health_check do
         healthy_threshold ref!("#{_name}_load_balancer_hc_threshold".to_sym)
         interval ref!("#{_name}_load_balancer_hc_interval".to_sym)
-        target join!(
-          ref!("#{_name}_instance_protocol".to_sym),
-          ':',
-          ref!("#{_name}_instance_port".to_sym)
-        #  ref!("#{_name}_load_balancer_hc_check_path".to_sym)
+        target if!(
+          "#{_name}_healthcheck_path".to_sym,
+          join!(
+            ref!("#{_name}_instance_protocol".to_sym),
+            ':',
+            ref!("#{_name}_instance_port".to_sym),
+            ref!("#{_name}_load_balancer_hc_check_path".to_sym)
+          ),
+          join!(
+            ref!("#{_name}_instance_protocol".to_sym),
+            ':',
+            ref!("#{_name}_instance_port".to_sym)
+          )
         )
         timeout ref!("#{_name}_load_balancer_hc_timeout".to_sym)
         unhealthy_threshold ref!("#{_name}_load_balancer_hc_unhealthy_threshold".to_sym)
@@ -96,7 +109,7 @@ SparkleFormation.dynamic(:application_load_balancer) do |_name, _config={}|
   _lb_resource
 end
 
-SparkleFormation.dynamic_info(:application_load_balancer).tap do |metadata|
+SparkleFormation.dynamic_info(:load_balancer).tap do |metadata|
   metadata[:parameters] = {
   }
 end
