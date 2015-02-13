@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/sparkleformation/sparkle_formation.git
+  revision: 355f8f70012160d9775ef13c1e6d1b7495abdec3
+  branch: develop
+  specs:
+    sparkle_formation (0.2.11)
+      attribute_struct (~> 0.2.2)
+      multi_json
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -103,9 +112,6 @@ GEM
     rest-client (1.6.7)
       mime-types (>= 1.16)
     slop (3.6.0)
-    sparkle_formation (0.2.10)
-      attribute_struct (~> 0.2.2)
-      multi_json
     systemu (2.6.4)
     thor (0.19.1)
     wmi-lite (1.0.0)
@@ -118,3 +124,4 @@ DEPENDENCIES
   chef (< 12)
   knife-cloudformation
   librarian-chef
+  sparkle_formation!
