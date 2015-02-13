@@ -32,7 +32,7 @@ SparkleFormation.dynamic(:asg) do |_name, _config={}|
   dynamic!(:wait_condition_handle, _name)
 
   dynamic!(:wait_condition, _name) do
-    depends_on process_key!("#{_name}_auto_scaling_auto_scaling_group".to_sym)
+    depends_on process_key!("#{_name}_auto_scaling_group".to_sym)
     properties do
       count min
       handle ref!("#{_name}_wait_condition_handle".to_sym)
