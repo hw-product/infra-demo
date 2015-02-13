@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export YETTY_SITE_CONFIG="/webapps/yetty/config.json"
+
 cd '/webapps/yetty'
 exec 2>&1
 exec chpst -u <%= node[:nginx][:user]%>:<%= node[:nginx][:user] %> \
