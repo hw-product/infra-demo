@@ -57,7 +57,7 @@ SfnRegistry.register(:chef_metadata) do |_name, _config={}|
           ref!(:environment),
           "'\n",
           "validation_key '/etc/chef/validator.pem'\n",
-          "validation_client_name 'heavywateroperations-validator'\n"
+          "validation_client_name 'chef-validator'\n"
         )
         mode '000644'
         owner 'root'
