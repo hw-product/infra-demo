@@ -5,6 +5,7 @@ cookbook 'users'
 cookbook 'chef-client'
 cookbook 'apt'
 cookbook 'wemux'
+cookbook 'geminabox'
 
 cookbook 'chef-server-populator', :git => 'https://github.com/hw-cookbooks/chef-server-populator', :ref => 'develop'
 
