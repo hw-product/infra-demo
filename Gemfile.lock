@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/sparkleformation/sfn.git
-  revision: b8624bbe227375a31142f8351827c6ca2ccc2ba8
+  revision: 195692779786406d7f922e11a9e2545b3296e08a
   specs:
     sfn (0.3.0)
       bogo-cli
