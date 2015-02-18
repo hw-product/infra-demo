@@ -12,7 +12,7 @@ SparkleFormation.dynamic(:node) do |_name, _config={}|
 
   end
 
-  dynamic!(:security_group, _name, :resource_name_suffix => :node_security_group) do
+  dynamic!(:security_group, _name) do
     properties do
       group_description "Instance security group (#{_name})"
       security_group_ingress array!(
@@ -32,7 +32,7 @@ SparkleFormation.dynamic(:node) do |_name, _config={}|
       instance_type ref!("#{_name}_instance_size".to_sym)
       key_name ref!("#{_name}_key_name".to_sym)
       security_groups [attr!("#{_name}_security_group".to_sym, 'GroupId')]
-      registry!(:node_user_data, _name, _config)
+      registry!(:node_user_data, _name, _config.merge(:disable_wait => true))
     end
     depends_on _config[:depends] if _config[:depends]
     registry!(:chef_metadata, _name, _config)
