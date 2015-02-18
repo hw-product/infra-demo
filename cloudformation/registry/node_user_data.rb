@@ -15,9 +15,13 @@ SfnRegistry.register(:node_user_data) do |_name, _config={}|
         ' --secret-key ',
         attr!(:stack_iam_access_key, :secret_access_key),
         "\n",
-        "cfn-signal -e $? -r 'Chef Server Configuration' '",
-        ref!("#{_name}_wait_condition_handle".to_sym),
-        "'\n"
+        *(
+          _config[:disable_wait] ? [] : [
+            "cfn-signal -e $? -r 'Node provision completion signal' '",
+            ref!("#{_name}_wait_condition_handle".to_sym),
+            "'\n"
+          ]
+        )
       )
     )
   )
