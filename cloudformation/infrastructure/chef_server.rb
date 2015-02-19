@@ -68,18 +68,9 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
       _camel_keys_set(:auto_disable)
       config.delete!(:commands)
       config do
-        files('/tmp/stable-infra.tgz') do
-          source join!(
-            'https://s3.amazonaws.com', ref!(:infrastructure_bucket), 'stable-infra.tgz',
-            :options => {
-              :delimiter => '/'
-            }
-          )
-          mode '000400'
-          owner 'root'
-          group 'root'
-          authentication 'InfrastructureBucketCredentials'
-        end
+        # NOTE: We never want the secret used by nodes available on
+        #       the server itself
+        files.delete!('/etc/chef/encrypted_data_bag_secret')
         files('/etc/chef-server/first_run.json') do
           content do
             run_list [
@@ -93,12 +84,24 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
             chef_server_populator.base_path '/tmp/srv-stp'
             chef_server_populator.clients do
               set!('chef-validator', 'validator.pub')
-              set!(ENV.fetch('KNIFE_USER', ENV.fetch('USER', 'unknown')).dup, 'creator.pub')
+              if(ENV['CHEF_CLIENT_KEY'])
+                set!(ENV.fetch('KNIFE_USER', ENV.fetch('USER', 'unknown')).dup, 'creator.pub')
+              end
             end
           end
         end
-        files('/tmp/srv-stp/creator.pub') do
-          content system!("openssl rsa -in #{ENV['CHEF_CLIENT_KEY']} -pubout")
+        if(ENV['CHEF_CLIENT_KEY'])
+          files('/tmp/srv-stp/creator.pub') do
+            content system!("openssl rsa -in #{ENV['CHEF_CLIENT_KEY']} -pubout")
+          end
+          sources.set!(
+            '/tmp/stable', join!(
+              'https://s3.amazonaws.com', ref!(:infrastructure_bucket), 'stable-infra.zip',
+              :options => {
+                :delimiter => '/'
+              }
+            )
+          )
         end
         files('/etc/chef/client.rb') do
           content "chef_server_url 'https://127.0.0.1'\n" <<
@@ -113,7 +116,7 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
         commands('00_create_required_directories') do
           command [
             'mkdir -p /tmp/chef/cookbooks /etc/chef',
-            '/var/log/chef /var/chef/cookbooks/chef-server'
+            '/var/log/chef /var/chef/cookbooks/chef-server',
             '/var/chef/cookbooks/chef-server-populator /tmp/srv-stp'
           ].join(' ')
         end
@@ -143,10 +146,6 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
         end
         commands('08_ensure_iptables_hole_punched') do
           command 'iptables -I INPUT 1 -p tcp --dport 443 -j ACCEPT'
-          ignoreErrors true
-        end
-        commands('09_unpack_infrastructure') do
-          command 'tar xzf /tmp/stable-infra.tgz -C /tmp/stable --strip-components=1'
           ignoreErrors true
         end
         commands('10_upload_cookbooks') do
