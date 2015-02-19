@@ -73,7 +73,7 @@ GEM
       libyajl2 (~> 1.2)
     form_data (0.1.0)
     hashie (2.1.2)
-    highline (1.6.21)
+    highline (1.7.0)
     http (0.7.1)
       form_data (~> 0.1.0)
       http_parser.rb (~> 0.6.0)
