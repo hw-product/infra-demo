@@ -68,18 +68,18 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
       _camel_keys_set(:auto_disable)
       config.delete!(:commands)
       config do
-        # files('/tmp/stable-infra.tgz') do
-        #   source join!(
-        #     'https://s3.amazonaws.com', ref!(:infrastructure_bucket), 'stable-infra.tgz',
-        #     :options => {
-        #       :delimiter => '/'
-        #     }
-        #   )
-        #   mode '000400'
-        #   owner 'root'
-        #   group 'root'
-        #   authentication 'InfrastructureBucketCredentials'
-        # end
+        files('/tmp/stable-infra.tgz') do
+          source join!(
+            'https://s3.amazonaws.com', ref!(:infrastructure_bucket), 'stable-infra.tgz',
+            :options => {
+              :delimiter => '/'
+            }
+          )
+          mode '000400'
+          owner 'root'
+          group 'root'
+          authentication 'InfrastructureBucketCredentials'
+        end
         files('/etc/chef-server/first_run.json') do
           content do
             run_list [
@@ -110,26 +110,67 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
             run_list [ref!(:chef_client_run_list)]
           end
         end
-        commands('00_a') do
+        commands('00_create_required_directories') do
           command [
             'mkdir -p /tmp/chef/cookbooks /etc/chef',
-            'wget -O /tmp/cstg http://bit.ly/Yf8tTb', # @note this is the chef server cookbook
-            'wget -O /tmp/csptg http://bit.ly/Yf8ztU', # @note this is the chef server populator cookbook
-            'curl -L https://www.opscode.com/chef/install.sh | bash -s -- -v 11.18.0',
-            'mkdir -p /var/log/chef /var/chef/cookbooks/chef-server /var/chef/cookbooks/chef-server-populator /tmp/srv-stp',
-            'tar xzf /tmp/cstg -C /var/chef/cookbooks/chef-server --strip-components=1',
-            'tar xzf /tmp/csptg -C /var/chef/cookbooks/chef-server-populator --strip-components=1',
-            'openssl rsa -in /etc/chef/validator.pem -pubout -out /tmp/srv-stp/validator.pub',
-            'HOME=/root chef-solo -j /etc/chef-server/first_run.json --force-logger -L /var/log/chef/srv.log',
-            'iptables -I INPUT 1 -p tcp --dport 443 -j ACCEPT',
-            'tar xzf /tmp/stable-infra.tgz -C /tmp/stable --strip-components=1',
-            'cd /tmp/stable',
-            'knife cookbook upload --all -k /etc/chef-server/admin.pem -u admin',
-            'knife role from file roles/* -k /etc/chef-server/admin.pem -u admin',
-            'knife environment from file environments/* -k /etc/chef-server/admin.pem -u admin',
-            'knife upload data_bags -k /etc/chef-server/admin.pem -u admin',
-            'chef-client -j /etc/chef/first_run.json'
-          ].join(';')
+            '/var/log/chef /var/chef/cookbooks/chef-server'
+            '/var/chef/cookbooks/chef-server-populator /tmp/srv-stp'
+          ].join(' ')
+        end
+        commands('01_fetch_chef_server_cookbook') do
+          command 'wget -O /tmp/cstg https://codeload.github.com/opscode-cookbooks/chef-server/tar.gz/v2.1.4'
+        end
+        commands('02_fetch_chef_server_populator_cookbook') do
+          command 'wget -O /tmp/csptg https://codeload.github.com/hw-cookbooks/chef-server-populator/tar.gz/develop'
+        end
+        commands('03_install_chef_client') do
+          command join!(
+            'curl -L https://www.opscode.com/chef/install.sh | bash -s -- -v ',
+            ref!(:chef_client_version)
+          )
+        end
+        commands('04_unpack_chef_server_cookbook') do
+          command 'tar xzf /tmp/cstg -C /var/chef/cookbooks/chef-server --strip-components=1'
+        end
+        commands('05_unpack_chef_server_populator_cookbook') do
+          command 'tar xzf /tmp/csptg -C /var/chef/cookbooks/chef-server-populator --strip-components=1'
+        end
+        commands('06_generate_validator_public_key') do
+          command 'openssl rsa -in /etc/chef/validator.pem -pubout -out /tmp/srv-stp/validator.pub'
+        end
+        commands('07_initial_chef_server_provision') do
+          command 'HOME=/root chef-solo -j /etc/chef-server/first_run.json --force-logger -L /var/log/chef/srv.log'
+        end
+        commands('08_ensure_iptables_hole_punched') do
+          command 'iptables -I INPUT 1 -p tcp --dport 443 -j ACCEPT'
+          ignoreErrors true
+        end
+        commands('09_unpack_infrastructure') do
+          command 'tar xzf /tmp/stable-infra.tgz -C /tmp/stable --strip-components=1'
+          ignoreErrors true
+        end
+        commands('10_upload_cookbooks') do
+          command 'knife cookbook upload --all -k /etc/chef-server/admin.pem -u admin'
+          cwd '/tmp/stable'
+          ignoreErrors true
+        end
+        commands('11_upload_environments') do
+          command 'knife environment from file environments/* -k /etc/chef-server/admin.pem -u admin'
+          cwd '/tmp/stable'
+          ignoreErrors true
+        end
+        commands('12_upload_roles') do
+          command 'knife role from file roles/* -k /etc/chef-server/admin.pem -u admin'
+          cwd '/tmp/stable'
+          ignoreErrors true
+        end
+        commands('13_upload_data_bags') do
+          command 'knife upload data_bags -k /etc/chef-server/admin.pem -u admin'
+          cwd '/tmp/stable'
+          ignoreErrors true
+        end
+        commands('14_provision_inception') do
+          command 'chef-client -j /etc/chef/first_run.json'
         end
       end
     end
