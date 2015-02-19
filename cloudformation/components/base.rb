@@ -51,7 +51,6 @@ SparkleFormation.build do
               effect 'Allow'
               action 's3:GetObject'
               resource join!('arn:aws:s3:::', ref!(:infrastructure_bucket), '/*')
-              principal attr!(:stack_iam_user, :arn)
             }
           )
         }
