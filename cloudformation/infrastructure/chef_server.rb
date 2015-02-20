@@ -94,6 +94,7 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
           files('/tmp/srv-stp/creator.pub') do
             content system!("openssl rsa -in #{ENV['CHEF_CLIENT_KEY']} -pubout")
           end
+        else
           sources.set!(
             '/tmp/stable', join!(
               'https://s3.amazonaws.com', ref!(:infrastructure_bucket), 'stable-infra.zip',
