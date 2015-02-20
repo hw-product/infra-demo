@@ -184,6 +184,8 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
     chef_server_instance_protocol.default 'TCP'
   end
 
+  parameters.delete!(:chef_server_url)
+
   outputs do
     chef_server_url do
       description 'Chef server endpoint URL'
