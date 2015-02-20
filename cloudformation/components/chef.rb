@@ -12,7 +12,9 @@ SparkleFormation.build do
 
     chef_server_url do
       description 'URL for the chef server'
-      default ENV.fetch('KNIFE_CHEF_SERVER_URL', 'http://localhost')
+      if(ENV['KNIFE_CHEF_SERVER_URL'])
+        default ENV['KNIFE_CHEF_SERVER_URL']
+      end
       type 'String'
       disable_apply true
     end
