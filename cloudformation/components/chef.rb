@@ -24,20 +24,6 @@ SparkleFormation.build do
       disable_apply true
     end
 
-    chef_validator_pem_name do
-      description 'Name of file in bucket of validation pem'
-      default 'validator.pem'
-      type 'String'
-      disable_apply true
-    end
-
-    chef_data_bag_secret_name do
-      description 'Name of file in bucket of data bag secret'
-      default 'secret.txt'
-      type 'String'
-      disable_apply true
-    end
-
   end
 
 end
