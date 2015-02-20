@@ -10,7 +10,7 @@ SfnRegistry.register(:node_user_data) do |_name, _config={}|
         ref!('AWS::Region'),
         ' -s ',
         ref!('AWS::StackName'),
-        " -r #{_process_key("#{_name}_launch_configuration")} --access-key ",
+        " -r #{_process_key(_name + '_' + _config[:node] ? 'node' : 'launch_configuration')} --access-key ",
         ref!(:stack_iam_access_key),
         ' --secret-key ',
         attr!(:stack_iam_access_key, :secret_access_key),

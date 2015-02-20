@@ -42,7 +42,7 @@ SparkleFormation.dynamic(:node) do |_name, _config={}|
       instance_type ref!("#{_name}_instance_size".to_sym)
       key_name ref!("#{_name}_key_name".to_sym)
       security_groups [ref!("#{_name}_security_group".to_sym)]
-      registry!(:node_user_data, _name)
+      registry!(:node_user_data, _name, :node => true)
     end
     if(_config[:depends])
       depends_on _config[:depends]
