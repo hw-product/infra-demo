@@ -14,7 +14,7 @@ SparkleFormation.build do
     end
 
     infrastructure_bucket do
-      default 'demo-infra'
+      default 'infra-demo'
       description 'Infrastructure files bucket'
       type 'String'
       disable_apply true
