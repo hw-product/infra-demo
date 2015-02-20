@@ -19,7 +19,7 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
     chef_client_run_list do
       type 'String'
       description 'Run list for chef server after initial bootstrap'
-      default 'recipe[chef-server-populator]'
+      default 'role[chef_server]'
     end
 
     infra_asset do
