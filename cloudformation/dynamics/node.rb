@@ -31,10 +31,12 @@ SparkleFormation.dynamic(:node) do |_name, _config={}|
       image_id map!(:platforms, 'AWS::Region', ref!("#{_name}_instance_image_type".to_sym))
       instance_type ref!("#{_name}_instance_size".to_sym)
       key_name ref!("#{_name}_key_name".to_sym)
-      security_groups [attr!("#{_name}_security_group".to_sym, 'GroupId')]
+      security_groups [ref!("#{_name}_security_group".to_sym)]
       registry!(:node_user_data, _name, _config.merge(:disable_wait => true))
     end
-    depends_on [ref!("#{_name}_security_group".to_sym), _config[:depends]].flatten.compact
+    if(_config[:depends])
+      depends_on _config[:depends]
+    end
     registry!(:chef_metadata, _name, _config)
   end
 
