@@ -159,7 +159,7 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
           ignoreErrors true
         end
         commands('10_upload_cookbooks') do
-          command 'knife cookbook upload --all -k /etc/chef-server/admin.pem -u admin'
+          command 'knife cookbook upload -o /tmp/stable/cookbooks --all -k /etc/chef-server/admin.pem -u admin'
           cwd '/tmp/stable'
           ignoreErrors true
         end
