@@ -12,6 +12,16 @@ SparkleFormation.dynamic(:node) do |_name, _config={}|
 
   end
 
+  dynamic!(:wait_condition_handle, _name)
+
+  dynamic!(:wait_condition, _name) do
+    properties do
+      count 1
+      handle ref!("#{_name}_wait_condition_handle".to_sym)
+      timeout 3600
+    end
+  end
+
   dynamic!(:security_group, _name) do
     properties do
       group_description "Instance security group (#{_name})"
@@ -32,7 +42,7 @@ SparkleFormation.dynamic(:node) do |_name, _config={}|
       instance_type ref!("#{_name}_instance_size".to_sym)
       key_name ref!("#{_name}_key_name".to_sym)
       security_groups [ref!("#{_name}_security_group".to_sym)]
-      registry!(:node_user_data, _name, _config.merge(:disable_wait => true))
+      registry!(:node_user_data, _name)
     end
     if(_config[:depends])
       depends_on _config[:depends]
