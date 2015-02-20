@@ -34,7 +34,7 @@ SparkleFormation.dynamic(:node) do |_name, _config={}|
       security_groups [attr!("#{_name}_security_group".to_sym, 'GroupId')]
       registry!(:node_user_data, _name, _config.merge(:disable_wait => true))
     end
-    depends_on _config[:depends] if _config[:depends]
+    depends_on [ref!("#{_name}_security_group".to_sym), _config[:depends]].flatten.compact
     registry!(:chef_metadata, _name, _config)
   end
 
