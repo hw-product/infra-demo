@@ -174,7 +174,7 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
           ignoreErrors true
         end
         commands('13_upload_data_bags') do
-          command 'knife upload data_bags -k /etc/chef-server/admin.pem -u admin'
+          command 'knife upload data_bags --chef-repo-path /tmp/stable -k /etc/chef-server/admin.pem -u admin'
           cwd '/tmp/stable'
           ignoreErrors true
         end
