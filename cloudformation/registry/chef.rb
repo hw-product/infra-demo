@@ -14,10 +14,7 @@ SfnRegistry.register(:chef_metadata) do |_name, _config={}|
     config do
       files('/etc/chef/validator.pem') do
         source join!(
-          'https://', ref!(:infrastructure_bucket), 's3.amazonaws.com', 'validator.pem',
-          :options => {
-            :delimiter => '/'
-          }
+          'https://', ref!(:infrastructure_bucket), '.s3.amazonaws.com/', 'validator.pem'
         )
         mode '000400'
         owner 'root'
@@ -26,10 +23,7 @@ SfnRegistry.register(:chef_metadata) do |_name, _config={}|
       end
       files('/etc/chef/encrypted_data_bag_secret') do
         source join!(
-          'https://', ref!(:infrastructure_bucket), 's3.amazonaws.com', 'encrypted_data_bag_secret',
-          :options => {
-            :delimiter => '/'
-          }
+          'https://', ref!(:infrastructure_bucket), '.s3.amazonaws.com/', 'encrypted_data_bag_secret'
         )
         mode '000400'
         owner 'root'
