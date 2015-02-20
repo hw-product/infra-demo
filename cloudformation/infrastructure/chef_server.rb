@@ -97,10 +97,7 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
         else
           sources.set!(
             '/tmp/stable', join!(
-              'https://s3.amazonaws.com', ref!(:infrastructure_bucket), 'stable-infra.zip',
-              :options => {
-                :delimiter => '/'
-              }
+              'https://', ref!(:infrastructure_bucket), '.s3.amazonaws.com/', 'stable-infra.zip'
             )
           )
         end
