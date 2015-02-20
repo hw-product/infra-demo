@@ -187,7 +187,7 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
   outputs do
     chef_server_url do
       description 'Chef server endpoint URL'
-      value join!('https://', attr!("#{_name}_load_balancer".to_sym, 'DNSName'))
+      value join!('https://', attr!(:chef_server_load_balancer, 'DNSName'))
     end
   end
 
