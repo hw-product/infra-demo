@@ -96,7 +96,7 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
           end
         else
           files('/tmp/stable.zip') do
-            sources join!(
+            source join!(
               'https://', ref!(:infrastructure_bucket), '.s3.amazonaws.com/', 'stable.zip'
             )
             mode '000400'
