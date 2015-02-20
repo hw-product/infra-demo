@@ -95,11 +95,23 @@ SparkleFormation.new(:chef_server).load(:base, :chef).overrides do
             content system!("openssl rsa -in #{ENV['CHEF_CLIENT_KEY']} -pubout")
           end
         else
-          sources.set!(
-            '/tmp/stable', join!(
-              'https://', ref!(:infrastructure_bucket), '.s3.amazonaws.com/', 'stable-infra.zip'
+          files('/tmp/stable.zip') do
+            sources join!(
+              'https://', ref!(:infrastructure_bucket), '.s3.amazonaws.com/', 'stable.zip'
             )
-          )
+            mode '000400'
+            owner 'root'
+            group 'root'
+            authentication 'InfrastructureBucketCredentials'
+          end
+          commands('09_install_unzip') do
+            command 'apt-get install -y -q unzip; yum install -y -q unzip;'
+            ignoreErrors true
+          end
+          commands('09_unpack_stable') do
+            command 'unzip stable.zip -d /tmp/stable'
+            cwd '/tmp'
+          end
         end
         files('/etc/chef/client.rb') do
           content "chef_server_url 'https://127.0.0.1'\n" <<
